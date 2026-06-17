@@ -72,7 +72,7 @@ php artisan route:cache || true
 php artisan view:cache || true
 
 echo "Storage link..."
-#php artisan storage:link || true
+php artisan storage:link || true
 
 # ==========================
 # BACKUP DE BASE DE DATOS Y PROYECTO
@@ -116,6 +116,7 @@ if [ -d ".git" ]; then
         git commit -m "Backup automático $TIMESTAMP"
         # git push origin main  # Opcional: descomentar para hacer push
         echo "✅ Commit realizado con mensaje: Backup automático $TIMESTAMP"
+        git push
     else
         echo "ℹ️ No hay cambios para commit."
     fi
