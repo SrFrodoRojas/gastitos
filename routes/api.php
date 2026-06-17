@@ -59,5 +59,5 @@ Route::middleware('auth:sanctum')->group(function () {
         PresupuestoController::class
     );
 
-    /* Aca agregue un comentario */
+    /* agregue este comentario y chatgpt miente y no sirve para nada la suscripcion */
 });
