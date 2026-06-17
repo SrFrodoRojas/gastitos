@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\MovimientoController;
 use App\Http\Controllers\Api\PresupuestoController;
 use App\Http\Controllers\Api\PresupuestoResumenController;
 use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\TarjetaCreditoController;
 use App\Http\Controllers\Api\TransferenciaController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,5 +64,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource(
         'metas-ahorro',
         MetaAhorroController::class
+    );
+
+    Route::apiResource(
+        'tarjetas-credito',
+        TarjetaCreditoController::class
     );
 });
