@@ -1,0 +1,87 @@
+curl -X POST http://127.0.0.1:8000/api/categorias \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15" \
+-d '{
+    "nombre":"Combustible",
+    "tipo":"gasto",
+    "icono":"local_gas_station",
+    "color":"#FF9800",
+    "activo":true
+}'
+
+curl -X POST http://127.0.0.1:8000/api/categorias \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15" \
+-d '{
+    "nombre":"Combustible",
+    "tipo":"gasto",
+    "icono":"local_gas_station",
+    "color":"#FF9800",
+    "activo":true
+}'
+
+
+curl http://127.0.0.1:8000/api/categorias \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15"
+
+
+curl http://127.0.0.1:8000/api/categorias/1 \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15"
+
+
+curl -X PUT http://127.0.0.1:8000/api/categorias/1 \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15" \
+-d '{
+    "nombre":"Combustible y Peajes",
+    "tipo":"gasto",
+    "icono":"local_gas_station",
+    "color":"#FF9800",
+    "activo":true
+}'
+
+
+curl -X POST http://127.0.0.1:8000/api/cuentas \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15" \
+-d '{
+    "moneda_id":1,
+    "nombre":"Caja Principal",
+    "tipo":"efectivo",
+    "saldo_inicial":100000
+}'
+
+curl http://127.0.0.1:8000/api/cuentas \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15"
+
+
+curl http://127.0.0.1:8000/api/cuentas/1 \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15"
+
+
+curl -X PUT http://127.0.0.1:8000/api/cuentas/1 \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer 3|domhUJWXHBL3rrFR6HNKhTJD1AmDdKw1FlkphH6N23346f15" \
+-d '{
+    "moneda_id":1,
+    "nombre":"Caja Principal",
+    "tipo":"efectivo",
+    "saldo_inicial":500000,
+    "activo":true
+}'
+
+
+
+
+curl http://127.0.0.1:8000/api/categorias/1 \
+-H "Accept: application/json" \
+-H "Authorization: Bearer 5|0RND3hgG8wJlC80h0AWGaa0VvALLCBQKNwuulXZk9726ec96"
