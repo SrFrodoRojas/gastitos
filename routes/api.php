@@ -75,5 +75,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource(
         'compras-tarjeta',
         CompraTarjetaController::class
-    )->except(['update']);
+    )
+        ->parameters([
+            'compras-tarjeta' => 'compraTarjeta',
+        ])
+        ->except(['update']);
 });

@@ -90,13 +90,14 @@ class CompraTarjetaController extends Controller
     public function show(
         CompraTarjeta $compraTarjeta
     ) {
-        return response()->json([
-            'compra_class' => get_class($compraTarjeta),
-            'compra_id' => $compraTarjeta->id,
-            'tarjeta_id' => $compraTarjeta->tarjeta_id,
-            'tarjeta_exists' => $compraTarjeta->tarjeta()->exists(),
-            'tarjeta_raw' => $compraTarjeta->tarjeta()->first(),
-        ]);
+        $this->authorize(
+            'view',
+            $compraTarjeta
+        );
+
+        return new CompraTarjetaResource(
+            $compraTarjeta
+        );
     }
 
     public function destroy(
