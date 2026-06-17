@@ -5,14 +5,18 @@ namespace App\Providers;
 use App\Models\Categoria;
 use App\Models\CompraTarjeta;
 use App\Models\Cuenta;
+use App\Models\MetaAhorro;
 use App\Models\Movimiento;
 use App\Models\Presupuesto;
+use App\Models\TarjetaCredito;
 use App\Models\Transferencia;
 use App\Policies\CategoriaPolicy;
 use App\Policies\CompraTarjetaPolicy;
 use App\Policies\CuentaPolicy;
+use App\Policies\MetaAhorroPolicy;
 use App\Policies\MovimientoPolicy;
 use App\Policies\PresupuestoPolicy;
+use App\Policies\TarjetaCreditoPolicy;
 use App\Policies\TransferenciaPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -54,6 +58,16 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             CompraTarjeta::class,
             CompraTarjetaPolicy::class
+        );
+
+        Gate::policy(
+            MetaAhorro::class,
+            MetaAhorroPolicy::class
+        );
+
+        Gate::policy(
+            TarjetaCredito::class,
+            TarjetaCreditoPolicy::class
         );
     }
 }
