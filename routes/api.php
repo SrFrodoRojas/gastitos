@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\CuentaController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\MetaAhorroController;
 use App\Http\Controllers\Api\MovimientoController;
 use App\Http\Controllers\Api\PresupuestoController;
 use App\Http\Controllers\Api\PresupuestoResumenController;
@@ -59,4 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
         PresupuestoController::class
     );
 
+    Route::apiResource(
+        'metas-ahorro',
+        MetaAhorroController::class
+    );
 });
