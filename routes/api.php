@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\Api\CompraTarjetaController;
 use App\Http\Controllers\Api\CuentaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\MetaAhorroController;
@@ -70,4 +71,9 @@ Route::middleware('auth:sanctum')->group(function () {
         'tarjetas-credito',
         TarjetaCreditoController::class
     );
+
+    Route::apiResource(
+        'compras-tarjeta',
+        CompraTarjetaController::class
+    )->except(['update']);
 });

@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Categoria;
+use App\Models\CompraTarjeta;
 use App\Models\Cuenta;
 use App\Models\Movimiento;
 use App\Models\Presupuesto;
 use App\Models\Transferencia;
 use App\Policies\CategoriaPolicy;
+use App\Policies\CompraTarjetaPolicy;
 use App\Policies\CuentaPolicy;
 use App\Policies\MovimientoPolicy;
 use App\Policies\PresupuestoPolicy;
@@ -47,6 +49,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             Presupuesto::class,
             PresupuestoPolicy::class
+        );
+
+        Gate::policy(
+            CompraTarjeta::class,
+            CompraTarjetaPolicy::class
         );
     }
 }
