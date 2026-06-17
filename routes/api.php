@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\CompraTarjetaController;
 use App\Http\Controllers\Api\CuentaController;
+use App\Http\Controllers\Api\CuotaTarjetaController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\MetaAhorroController;
 use App\Http\Controllers\Api\MovimientoController;
@@ -80,4 +81,19 @@ Route::middleware('auth:sanctum')->group(function () {
             'compras-tarjeta' => 'compraTarjeta',
         ])
         ->except(['update']);
+
+    Route::get(
+        'cuotas-tarjeta',
+        [CuotaTarjetaController::class, 'index']
+    );
+
+    Route::get(
+        'cuotas-tarjeta/{cuotaTarjeta}',
+        [CuotaTarjetaController::class, 'show']
+    );
+
+    Route::patch(
+        'cuotas-tarjeta/{cuotaTarjeta}/pagar',
+        [CuotaTarjetaController::class, 'pagar']
+    );
 });
