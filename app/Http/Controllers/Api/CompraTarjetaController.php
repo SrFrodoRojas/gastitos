@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CompraTarjetaStoreRequest;
+use App\Http\Resources\CompraTarjetaResource;
 use App\Models\CompraTarjeta;
 use App\Models\CuotaTarjeta;
 use App\Models\TarjetaCredito;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CompraTarjetaResource;
-use App\Http\Requests\CompraTarjetaStoreRequest;
 
 class CompraTarjetaController extends Controller
 {
@@ -19,7 +19,7 @@ class CompraTarjetaController extends Controller
             CompraTarjeta::query()
                 ->whereHas(
                     'tarjeta',
-                    fn ($q) => $q->where(
+                    fn($q) => $q->where(
                         'user_id',
                         auth()->id()
                     )
@@ -34,7 +34,6 @@ class CompraTarjetaController extends Controller
     ) {
         return DB::transaction(
             function () use ($request) {
-
                 $tarjeta = TarjetaCredito::where(
                     'user_id',
                     auth()->id()
@@ -52,8 +51,8 @@ class CompraTarjetaController extends Controller
                 );
 
                 $montoCuota = round(
-                    $compra->monto_total /
-                    $compra->cuotas,
+                    $compra->monto_total
+                        / $compra->cuotas,
                     2
                 );
 
@@ -91,14 +90,13 @@ class CompraTarjetaController extends Controller
     public function show(
         CompraTarjeta $compraTarjeta
     ) {
-        $this->authorize(
-            'view',
-            $compraTarjeta
-        );
-
-        return new CompraTarjetaResource(
-            $compraTarjeta
-        );
+        return response()->json([
+            'compra_class' => get_class($compraTarjeta),
+            'compra_id' => $compraTarjeta->id,
+            'tarjeta_id' => $compraTarjeta->tarjeta_id,
+            'tarjeta_exists' => $compraTarjeta->tarjeta()->exists(),
+            'tarjeta_raw' => $compraTarjeta->tarjeta()->first(),
+        ]);
     }
 
     public function destroy(
@@ -111,7 +109,6 @@ class CompraTarjetaController extends Controller
 
         DB::transaction(
             function () use ($compraTarjeta) {
-
                 $compraTarjeta
                     ->tarjeta
                     ->decrement(
