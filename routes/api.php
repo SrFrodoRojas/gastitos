@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\TarjetaCreditoController;
 use App\Http\Controllers\Api\TipoCambioController;
 use App\Http\Controllers\Api\TransferenciaController;
+use App\Http\Controllers\Api\MovimientoRecurrenteController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
