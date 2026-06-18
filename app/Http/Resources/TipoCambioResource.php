@@ -7,15 +7,22 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TipoCambioResource extends JsonResource
 {
-    public function toArray(
-        Request $request
-    ): array {
+    public function toArray(Request $request): array
+    {
         return [
             'id' => $this->id,
-            'moneda_origen_id' => $this->moneda_origen_id,
-            'moneda_destino_id' => $this->moneda_destino_id,
-            'cotizacion' => $this->cotizacion,
-            'fecha' => $this->fecha,
+
+            'moneda_origen' =>
+                $this->monedaOrigen?->codigo,
+
+            'moneda_destino' =>
+                $this->monedaDestino?->codigo,
+
+            'cotizacion' =>
+                (float) $this->cotizacion,
+
+            'fecha' =>
+                $this->fecha?->format('Y-m-d'),
         ];
     }
 }

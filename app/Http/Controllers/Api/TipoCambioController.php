@@ -12,84 +12,81 @@ class TipoCambioController extends Controller
     public function index()
     {
         return TipoCambioResource::collection(
-            TipoCambio::latest('fecha')->get()
+            TipoCambio::with([
+                'monedaOrigen',
+                'monedaDestino'
+            ])
+            ->latest('fecha')
+            ->get()
         );
     }
 
-    public function store(
-        Request $request
-    ) {
-        $data = $request->validate([
-            'moneda_origen_id' => [
-                'required',
-                'exists:monedas,id',
-            ],
-            'moneda_destino_id' => [
-                'required',
-                'exists:monedas,id',
-            ],
-            'cotizacion' => [
-                'required',
-                'numeric',
-                'gt:0',
-            ],
-            'fecha' => [
-                'required',
-                'date',
-            ],
-        ]);
+    public function store(Request $request)
+    {
+        $tipoCambio = TipoCambio::create(
+            $request->validate([
+                'moneda_origen_id' =>
+                    'required|exists:monedas,id',
+
+                'moneda_destino_id' =>
+                    'required|exists:monedas,id',
+
+                'cotizacion' =>
+                    'required|numeric|gt:0',
+
+                'fecha' =>
+                    'required|date',
+            ])
+        );
 
         return new TipoCambioResource(
-            TipoCambio::create($data)
+            $tipoCambio->load([
+                'monedaOrigen',
+                'monedaDestino'
+            ])
         );
     }
 
     public function show(
         TipoCambio $tipoCambio
-    ) {
+    )
+    {
         return new TipoCambioResource(
-            $tipoCambio
+            $tipoCambio->load([
+                'monedaOrigen',
+                'monedaDestino'
+            ])
         );
     }
 
     public function update(
         Request $request,
         TipoCambio $tipoCambio
-    ) {
+    )
+    {
         $tipoCambio->update(
             $request->validate([
-                'moneda_origen_id' => [
-                    'required',
-                    'exists:monedas,id',
-                ],
-                'moneda_destino_id' => [
-                    'required',
-                    'exists:monedas,id',
-                ],
-                'cotizacion' => [
-                    'required',
-                    'numeric',
-                    'gt:0',
-                ],
-                'fecha' => [
-                    'required',
-                    'date',
-                ],
+                'cotizacion' =>
+                    'required|numeric|gt:0',
             ])
         );
 
         return new TipoCambioResource(
-            $tipoCambio->fresh()
+            $tipoCambio->fresh()->load([
+                'monedaOrigen',
+                'monedaDestino'
+            ])
         );
     }
 
     public function destroy(
         TipoCambio $tipoCambio
-    ) {
+    )
+    {
         $tipoCambio->delete();
 
         return response()->json([
-            'success' => true,
+            'success' => true
         ]);
     }
 }
