@@ -113,4 +113,9 @@ Route::middleware('auth:sanctum')->group(function () {
         'movimientos/{movimiento}/etiquetas',
         [MovimientoEtiquetaController::class, 'sync']
     );
+
+    Route::apiResource(
+        'tipos-cambio',
+        TipoCambioController::class
+    );
 });
