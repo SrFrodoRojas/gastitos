@@ -27,7 +27,7 @@ class MetaAhorroController extends Controller
         $meta = MetaAhorro::create([
             ...$request->validated(),
             'user_id' => auth()->id(),
-        ]);
+        ])->fresh();
 
         return (new MetaAhorroResource($meta))
             ->response()
