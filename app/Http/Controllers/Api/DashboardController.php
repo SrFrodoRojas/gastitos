@@ -17,10 +17,41 @@ class DashboardController extends Controller
         $inicioMes = now()->startOfMonth()->toDateString();
         $finMes = now()->endOfMonth()->toDateString();
 
-        $saldoTotal = Cuenta::where(
-            'user_id',
-            $userId
-        )->sum('saldo_actual');
+        $saldoTotal = 0;
+
+        $cuentas = Cuenta::query()
+            ->with('moneda')
+            ->where('user_id', $userId)
+            ->get();
+
+        foreach ($cuentas as $cuenta) {
+            if ($cuenta->moneda_id == 1) {
+                $saldoTotal += $cuenta->saldo_actual;
+
+                continue;
+            }
+
+            $tipoCambio = \App\Models\TipoCambio::query()
+                ->where(
+                    'moneda_origen_id',
+                    $cuenta->moneda_id
+                )
+                ->where(
+                    'moneda_destino_id',
+                    1
+                )
+                ->latest('fecha')
+                ->first();
+
+            if (!$tipoCambio) {
+                continue;
+            }
+
+            $saldoTotal += (
+                $cuenta->saldo_actual
+                * $tipoCambio->cotizacion
+            );
+        }
 
         $ingresosMes = Movimiento::query()
             ->where('user_id', $userId)
@@ -42,7 +73,7 @@ class DashboardController extends Controller
 
         $ultimosMovimientos = Movimiento::query()
             ->with([
-                'cuenta',
+                'cuenta.moneda',
                 'categoria',
             ])
             ->where('user_id', $userId)
@@ -51,14 +82,27 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
+        $patrimonio = Cuenta::query()
+            ->with('moneda')
+            ->where('user_id', $userId)
+            ->get()
+            ->groupBy(fn($cuenta) => $cuenta->moneda->codigo)
+            ->map(fn($cuentas) => round(
+                $cuentas->sum('saldo_actual'),
+                2
+            ));
+
         return response()->json([
-            'saldo_total' => (float) $saldoTotal,
+            'saldo_total_pyg' => (float) $saldoTotal,
+            'patrimonio' => $patrimonio,
             'ingresos_mes' => (float) $ingresosMes,
             'gastos_mes' => (float) $gastosMes,
             'balance_mes' => (float) (
                 $ingresosMes - $gastosMes
             ),
-            'ultimos_movimientos' => $ultimosMovimientos,
+            'cuentas' => $cuentas,
+            'ultimos_movimientos' =>
+                $ultimosMovimientos,
         ]);
     }
 }
