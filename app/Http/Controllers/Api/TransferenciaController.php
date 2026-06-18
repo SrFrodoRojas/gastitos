@@ -2,30 +2,69 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\TransferenciaStoreRequest;
+use App\Http\Resources\TransferenciaResource;
 use App\Models\Cuenta;
 use App\Models\Transferencia;
-use App\Http\Controllers\Controller;
 use App\Services\TransferenciaService;
-use App\Http\Resources\TransferenciaResource;
-use App\Http\Requests\TransferenciaStoreRequest;
 
 class TransferenciaController extends Controller
 {
     public function __construct(
         private TransferenciaService $service
-    ) {
-    }
+    ) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $query = Transferencia::query()
+            ->with([
+                'cuentaOrigen.moneda',
+                'cuentaDestino.moneda',
+            ])
+            ->where(
+                'user_id',
+                auth()->id()
+            );
+
+        if ($request->filled('cuenta_id')) {
+            $query->where(function ($q) use ($request) {
+                $q->where(
+                    'cuenta_origen_id',
+                    $request->cuenta_id
+                )->orWhere(
+                    'cuenta_destino_id',
+                    $request->cuenta_id
+                );
+            });
+        }
+
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate(
+                'fecha',
+                '>=',
+                $request->fecha_desde
+            );
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate(
+                'fecha',
+                '<=',
+                $request->fecha_hasta
+            );
+        }
+
+        if ($request->filled('texto')) {
+            $query->where(
+                'descripcion',
+                'like',
+                '%' . $request->texto . '%'
+            );
+        }
+
         return TransferenciaResource::collection(
-            auth()
-                ->user()
-                ->transferencias()
-                ->with([
-                    'cuentaOrigen.moneda',
-                    'cuentaDestino.moneda',
-                ])
+            $query
                 ->orderByDesc('fecha')
                 ->orderByDesc('id')
                 ->get()
@@ -34,8 +73,7 @@ class TransferenciaController extends Controller
 
     public function store(
         TransferenciaStoreRequest $request
-    )
-    {
+    ) {
         $data = $request->validated();
 
         $origen = Cuenta::findOrFail(
@@ -73,8 +111,7 @@ class TransferenciaController extends Controller
 
     public function show(
         Transferencia $transferencia
-    )
-    {
+    ) {
         $this->authorize(
             'view',
             $transferencia
