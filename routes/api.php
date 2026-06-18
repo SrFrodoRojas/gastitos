@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CompraTarjetaController;
 use App\Http\Controllers\Api\CuentaController;
 use App\Http\Controllers\Api\CuotaTarjetaController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\EtiquetaController;
 use App\Http\Controllers\Api\MetaAhorroController;
 use App\Http\Controllers\Api\MovimientoController;
 use App\Http\Controllers\Api\PresupuestoController;
@@ -95,5 +96,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch(
         'cuotas-tarjeta/{cuotaTarjeta}/pagar',
         [CuotaTarjetaController::class, 'pagar']
+    );
+
+    Route::apiResource(
+        'etiquetas',
+        EtiquetaController::class
     );
 });
