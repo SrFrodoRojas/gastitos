@@ -92,3 +92,10 @@ curl -X POST \
   -H "Authorization: Bearer 13|71fsNXvayOSZxKVaVDKqJSTjruSEDY1m4ENr6LgO6f4e0771" \
   -H "Accept: application/json" \
   -F "comprobante=@/public/logo.png"
+
+
+curl -k -X POST \
+https://gastitos.darutau.online/api/movimientos/1/comprobante \
+-H "Authorization: Bearer 13|71fsNXvayOSZxKVaVDKqJSTjruSEDY1m4ENr6LgO6f4e0771" \
+-H "Accept: application/json" \
+-F "comprobante=@public/logo.png"
