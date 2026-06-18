@@ -14,7 +14,8 @@ class MetaAhorroController extends Controller
     public function index()
     {
         return MetaAhorroResource::collection(
-            auth()->user()
+            auth()
+                ->user()
                 ->metasAhorro()
                 ->latest()
                 ->get()
@@ -28,7 +29,9 @@ class MetaAhorroController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return new MetaAhorroResource($meta);
+        return (new MetaAhorroResource($meta))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(MetaAhorro $metaAhorro)

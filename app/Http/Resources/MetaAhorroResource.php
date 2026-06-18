@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 class MetaAhorroResource extends JsonResource
 {
@@ -13,10 +13,13 @@ class MetaAhorroResource extends JsonResource
             'id' => $this->id,
             'nombre' => $this->nombre,
             'descripcion' => $this->descripcion,
-            'monto_objetivo' => $this->monto_objetivo,
-            'monto_actual' => $this->monto_actual,
+            'monto_objetivo' => (float) $this->monto_objetivo,
+            'monto_actual' => (float) $this->monto_actual,
             'porcentaje' => $this->monto_objetivo > 0
-                ? round(($this->monto_actual / $this->monto_objetivo) * 100, 2)
+                ? round(
+                    ($this->monto_actual / $this->monto_objetivo) * 100,
+                    2
+                )
                 : 0,
             'fecha_objetivo' => $this->fecha_objetivo,
             'estado' => $this->estado,
