@@ -10,13 +10,13 @@ use App\Http\Controllers\Api\EtiquetaController;
 use App\Http\Controllers\Api\MetaAhorroController;
 use App\Http\Controllers\Api\MovimientoController;
 use App\Http\Controllers\Api\MovimientoEtiquetaController;
+use App\Http\Controllers\Api\MovimientoRecurrenteController;
 use App\Http\Controllers\Api\PresupuestoController;
 use App\Http\Controllers\Api\PresupuestoResumenController;
 use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\TarjetaCreditoController;
 use App\Http\Controllers\Api\TipoCambioController;
 use App\Http\Controllers\Api\TransferenciaController;
-use App\Http\Controllers\Api\MovimientoRecurrenteController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -70,7 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource(
         'metas-ahorro',
         MetaAhorroController::class
-    );
+    )->parameters([
+        'metas-ahorro' => 'metaAhorro',
+    ]);
 
     Route::apiResource(
         'tarjetas-credito',
