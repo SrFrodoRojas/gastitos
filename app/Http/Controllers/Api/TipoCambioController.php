@@ -5,29 +5,42 @@ namespace App\Http\Controllers\Api;
 use App\Models\TipoCambio;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TipoCambioResource;
-use App\Http\Requests\TipoCambioStoreRequest;
-use App\Http\Requests\TipoCambioUpdateRequest;
+use Illuminate\Http\Request;
 
 class TipoCambioController extends Controller
 {
     public function index()
     {
         return TipoCambioResource::collection(
-            TipoCambio::latest('fecha')
-                ->get()
+            TipoCambio::latest('fecha')->get()
         );
     }
 
     public function store(
-        TipoCambioStoreRequest $request
+        Request $request
     ) {
-        $tipoCambio =
-            TipoCambio::create(
-                $request->validated()
-            );
+        $data = $request->validate([
+            'moneda_origen_id' => [
+                'required',
+                'exists:monedas,id',
+            ],
+            'moneda_destino_id' => [
+                'required',
+                'exists:monedas,id',
+            ],
+            'cotizacion' => [
+                'required',
+                'numeric',
+                'gt:0',
+            ],
+            'fecha' => [
+                'required',
+                'date',
+            ],
+        ]);
 
         return new TipoCambioResource(
-            $tipoCambio
+            TipoCambio::create($data)
         );
     }
 
@@ -40,11 +53,29 @@ class TipoCambioController extends Controller
     }
 
     public function update(
-        TipoCambioUpdateRequest $request,
+        Request $request,
         TipoCambio $tipoCambio
     ) {
         $tipoCambio->update(
-            $request->validated()
+            $request->validate([
+                'moneda_origen_id' => [
+                    'required',
+                    'exists:monedas,id',
+                ],
+                'moneda_destino_id' => [
+                    'required',
+                    'exists:monedas,id',
+                ],
+                'cotizacion' => [
+                    'required',
+                    'numeric',
+                    'gt:0',
+                ],
+                'fecha' => [
+                    'required',
+                    'date',
+                ],
+            ])
         );
 
         return new TipoCambioResource(
@@ -58,8 +89,7 @@ class TipoCambioController extends Controller
         $tipoCambio->delete();
 
         return response()->json([
-            'message' =>
-                'Tipo de cambio eliminado correctamente',
+            'success' => true,
         ]);
     }
 }

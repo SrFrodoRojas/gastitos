@@ -17,7 +17,9 @@ class Transferencia extends Model
         'cuenta_origen_id',
         'cuenta_destino_id',
         'fecha',
-        'monto',
+        'monto_origen',
+        'monto_destino',
+        'cotizacion',
         'descripcion',
     ];
 
@@ -25,7 +27,9 @@ class Transferencia extends Model
     {
         return [
             'fecha' => 'date:Y-m-d',
-            'monto' => 'decimal:2',
+            'monto_origen' => 'decimal:2',
+            'monto_destino' => 'decimal:2',
+            'cotizacion' => 'decimal:6',
         ];
     }
 
@@ -36,11 +40,17 @@ class Transferencia extends Model
 
     public function cuentaOrigen(): BelongsTo
     {
-        return $this->belongsTo(Cuenta::class, 'cuenta_origen_id');
+        return $this->belongsTo(
+            Cuenta::class,
+            'cuenta_origen_id'
+        );
     }
 
     public function cuentaDestino(): BelongsTo
     {
-        return $this->belongsTo(Cuenta::class, 'cuenta_destino_id');
+        return $this->belongsTo(
+            Cuenta::class,
+            'cuenta_destino_id'
+        );
     }
 }
