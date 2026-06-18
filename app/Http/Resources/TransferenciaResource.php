@@ -14,18 +14,26 @@ class TransferenciaResource extends JsonResource
 
             'fecha' => $this->fecha?->format('Y-m-d'),
 
-            'monto' => (float) $this->monto,
+            'monto_origen' => (float) $this->monto_origen,
+
+            'monto_destino' => (float) $this->monto_destino,
+
+            'cotizacion' => (float) $this->cotizacion,
 
             'descripcion' => $this->descripcion,
 
             'cuenta_origen' => $this->whenLoaded(
                 'cuentaOrigen',
-                fn () => new CuentaResource($this->cuentaOrigen)
+                fn () => new CuentaResource(
+                    $this->cuentaOrigen
+                )
             ),
 
             'cuenta_destino' => $this->whenLoaded(
                 'cuentaDestino',
-                fn () => new CuentaResource($this->cuentaDestino)
+                fn () => new CuentaResource(
+                    $this->cuentaDestino
+                )
             ),
         ];
     }
