@@ -22,6 +22,7 @@ class Movimiento extends Model
         'descripcion',
         'monto',
         'observacion',
+        'comprobante',
     ];
 
     protected function casts(): array

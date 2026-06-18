@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Cuenta;
-use App\Models\Categoria;
-use App\Models\Movimiento;
 use App\Http\Controllers\Controller;
-use App\Services\MovimientoService;
-use App\Http\Resources\MovimientoResource;
 use App\Http\Requests\MovimientoStoreRequest;
 use App\Http\Requests\MovimientoUpdateRequest;
+use App\Http\Resources\MovimientoResource;
+use App\Models\Categoria;
+use App\Models\Cuenta;
+use App\Models\Movimiento;
+use App\Services\MovimientoService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MovimientoController extends Controller
 {
     public function __construct(
         private MovimientoService $service
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -36,8 +37,7 @@ class MovimientoController extends Controller
 
     public function store(
         MovimientoStoreRequest $request
-    )
-    {
+    ) {
         $data = $request->validated();
 
         $cuenta = Cuenta::findOrFail(
@@ -84,8 +84,7 @@ class MovimientoController extends Controller
 
     public function show(
         Movimiento $movimiento
-    )
-    {
+    ) {
         $this->authorize(
             'view',
             $movimiento
@@ -102,8 +101,7 @@ class MovimientoController extends Controller
     public function update(
         MovimientoUpdateRequest $request,
         Movimiento $movimiento
-    )
-    {
+    ) {
         $this->authorize(
             'update',
             $movimiento
@@ -123,8 +121,7 @@ class MovimientoController extends Controller
 
     public function destroy(
         Movimiento $movimiento
-    )
-    {
+    ) {
         $this->authorize(
             'delete',
             $movimiento
@@ -136,6 +133,47 @@ class MovimientoController extends Controller
 
         return response()->json([
             'success' => true,
+        ]);
+    }
+
+    public function subirComprobante(
+        Request $request,
+        Movimiento $movimiento
+    ) {
+        $this->authorize(
+            'update',
+            $movimiento
+        );
+
+        $request->validate([
+            'comprobante' => [
+                'required',
+                'file',
+                'mimes:jpg,jpeg,png,webp,pdf',
+                'max:5120',
+            ],
+        ]);
+
+        if ($movimiento->comprobante) {
+            Storage::disk('public')
+                ->delete($movimiento->comprobante);
+        }
+
+        $path = $request
+            ->file('comprobante')
+            ->store(
+                'comprobantes',
+                'public'
+            );
+
+        $movimiento->update([
+            'comprobante' => $path,
+        ]);
+
+        return response()->json([
+            'url' => asset(
+                'storage/' . $path
+            ),
         ]);
     }
 }

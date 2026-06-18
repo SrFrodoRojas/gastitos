@@ -14,8 +14,8 @@ use App\Http\Controllers\Api\PresupuestoController;
 use App\Http\Controllers\Api\PresupuestoResumenController;
 use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\TarjetaCreditoController;
-use App\Http\Controllers\Api\TransferenciaController;
 use App\Http\Controllers\Api\TipoCambioController;
+use App\Http\Controllers\Api\TransferenciaController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -113,6 +113,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put(
         'movimientos/{movimiento}/etiquetas',
         [MovimientoEtiquetaController::class, 'sync']
+    );
+
+    Route::post(
+        'movimientos/{movimiento}/comprobante',
+        [MovimientoController::class, 'subirComprobante']
     );
 
     Route::apiResource(

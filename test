@@ -85,3 +85,10 @@ curl -X PUT http://127.0.0.1:8000/api/cuentas/1 \
 curl http://127.0.0.1:8000/api/categorias/1 \
 -H "Accept: application/json" \
 -H "Authorization: Bearer 5|0RND3hgG8wJlC80h0AWGaa0VvALLCBQKNwuulXZk9726ec96"
+
+
+curl -X POST \
+  https://gastitos.darutau.online/api/movimientos/1/comprobante \
+  -H "Authorization: Bearer 13|71fsNXvayOSZxKVaVDKqJSTjruSEDY1m4ENr6LgO6f4e0771" \
+  -H "Accept: application/json" \
+  -F "comprobante=@/public/logo.png"
