@@ -7,11 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class MetaAhorroUpdateRequest extends FormRequest
 {
 
-dd([
-    auth()->id(),
-    $metaAhorro->id,
-    $metaAhorro->user_id,
-]);
+
     public function authorize(): bool
     {
         return true;
