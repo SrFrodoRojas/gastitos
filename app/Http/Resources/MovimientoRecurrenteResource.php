@@ -7,13 +7,24 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MovimientoRecurrenteResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'tipo' => $this->tipo,
+            'descripcion' => $this->descripcion,
+            'monto' => (float) $this->monto,
+            'frecuencia' => $this->frecuencia,
+            'proxima_fecha' => $this->proxima_fecha?->format('Y-m-d'),
+            'activo' => $this->activo,
+
+            'cuenta' => new CuentaResource(
+                $this->whenLoaded('cuenta')
+            ),
+
+            'categoria' => new CategoriaResource(
+                $this->whenLoaded('categoria')
+            ),
+        ];
     }
 }

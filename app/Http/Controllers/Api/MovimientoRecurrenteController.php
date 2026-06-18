@@ -2,48 +2,88 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\MovimientoRecurrente;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\MovimientoRecurrenteStoreRequest;
+use App\Http\Requests\MovimientoRecurrenteUpdateRequest;
+use App\Http\Resources\MovimientoRecurrenteResource;
 
 class MovimientoRecurrenteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return MovimientoRecurrenteResource::collection(
+            auth()->user()
+                ->movimientosRecurrentes()
+                ->with(['cuenta.moneda', 'categoria'])
+                ->latest()
+                ->get()
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(MovimientoRecurrenteStoreRequest $request)
     {
-        //
+        $item = MovimientoRecurrente::create([
+            ...$request->validated(),
+            'user_id' => auth()->id(),
+        ]);
+
+        return new MovimientoRecurrenteResource(
+            $item->load([
+                'cuenta.moneda',
+                'categoria',
+            ])
+        );
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(MovimientoRecurrente $movimientoRecurrente)
     {
-        //
+        abort_unless(
+            $movimientoRecurrente->user_id == auth()->id(),
+            403
+        );
+
+        return new MovimientoRecurrenteResource(
+            $movimientoRecurrente->load([
+                'cuenta.moneda',
+                'categoria',
+            ])
+        );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(
+        MovimientoRecurrenteUpdateRequest $request,
+        MovimientoRecurrente $movimientoRecurrente
+    ) {
+        abort_unless(
+            $movimientoRecurrente->user_id == auth()->id(),
+            403
+        );
+
+        $movimientoRecurrente->update(
+            $request->validated()
+        );
+
+        return new MovimientoRecurrenteResource(
+            $movimientoRecurrente->fresh()->load([
+                'cuenta.moneda',
+                'categoria',
+            ])
+        );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(
+        MovimientoRecurrente $movimientoRecurrente
+    ) {
+        abort_unless(
+            $movimientoRecurrente->user_id == auth()->id(),
+            403
+        );
+
+        $movimientoRecurrente->delete();
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

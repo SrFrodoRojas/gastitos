@@ -2,28 +2,58 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MovimientoRecurrenteStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'cuenta_id' => [
+                'required',
+                'exists:cuentas,id',
+            ],
+
+            'categoria_id' => [
+                'required',
+                'exists:categorias,id',
+            ],
+
+            'tipo' => [
+                'required',
+                'in:ingreso,gasto',
+            ],
+
+            'descripcion' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'monto' => [
+                'required',
+                'numeric',
+                'gt:0',
+            ],
+
+            'frecuencia' => [
+                'required',
+                'in:diaria,semanal,mensual,anual',
+            ],
+
+            'proxima_fecha' => [
+                'required',
+                'date',
+            ],
+
+            'activo' => [
+                'boolean',
+            ],
         ];
     }
 }

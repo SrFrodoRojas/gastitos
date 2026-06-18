@@ -124,4 +124,9 @@ Route::middleware('auth:sanctum')->group(function () {
         'tipos-cambio',
         TipoCambioController::class
     );
+
+    Route::apiResource(
+        'movimientos-recurrentes',
+        MovimientoRecurrenteController::class
+    );
 });
