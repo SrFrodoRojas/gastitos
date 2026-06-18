@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EtiquetaController;
 use App\Http\Controllers\Api\MetaAhorroController;
 use App\Http\Controllers\Api\MovimientoController;
+use App\Http\Controllers\Api\MovimientoEtiquetaController;
 use App\Http\Controllers\Api\PresupuestoController;
 use App\Http\Controllers\Api\PresupuestoResumenController;
 use App\Http\Controllers\Api\ReporteController;
@@ -101,5 +102,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource(
         'etiquetas',
         EtiquetaController::class
+    );
+
+    Route::get(
+        'movimientos/{movimiento}/etiquetas',
+        [MovimientoEtiquetaController::class, 'index']
+    );
+
+    Route::put(
+        'movimientos/{movimiento}/etiquetas',
+        [MovimientoEtiquetaController::class, 'sync']
     );
 });
