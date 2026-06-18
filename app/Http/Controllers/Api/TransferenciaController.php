@@ -57,11 +57,34 @@ class TransferenciaController extends Controller
         }
 
         if ($request->filled('texto')) {
-            $query->where(
-                'descripcion',
-                'like',
-                '%' . $request->texto . '%'
-            );
+            $texto = $request->texto;
+
+            $query->where(function ($q) use ($texto) {
+                $q
+                    ->where(
+                        'descripcion',
+                        'like',
+                        "%{$texto}%"
+                    )
+                    ->orWhereHas('cuentaOrigen', function ($q) use ($texto) {
+                        $q
+                            ->where('nombre', 'like', "%{$texto}%")
+                            ->orWhereHas('moneda', function ($q) use ($texto) {
+                                $q
+                                    ->where('codigo', 'like', "%{$texto}%")
+                                    ->orWhere('nombre', 'like', "%{$texto}%");
+                            });
+                    })
+                    ->orWhereHas('cuentaDestino', function ($q) use ($texto) {
+                        $q
+                            ->where('nombre', 'like', "%{$texto}%")
+                            ->orWhereHas('moneda', function ($q) use ($texto) {
+                                $q
+                                    ->where('codigo', 'like', "%{$texto}%")
+                                    ->orWhere('nombre', 'like', "%{$texto}%");
+                            });
+                    });
+            });
         }
 
         return TransferenciaResource::collection(

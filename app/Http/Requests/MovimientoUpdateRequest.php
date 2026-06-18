@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MovimientoUpdateRequest extends FormRequest
+class PresupuestoUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,20 +14,28 @@ class MovimientoUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fecha' => [
-                'required',
-                'date',
+            'categoria_id' => [
+                'sometimes',
+                'exists:categorias,id',
             ],
 
-            'descripcion' => [
-                'required',
-                'string',
-                'max:255',
+            'anio' => [
+                'sometimes',
+                'integer',
+                'min:2020',
+                'max:2100',
             ],
 
-            'observacion' => [
-                'nullable',
-                'string',
+            'mes' => [
+                'sometimes',
+                'integer',
+                'between:1,12',
+            ],
+
+            'monto_limite' => [
+                'sometimes',
+                'numeric',
+                'gt:0',
             ],
         ];
     }
