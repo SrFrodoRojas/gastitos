@@ -8,6 +8,7 @@ use App\Http\Resources\TransferenciaResource;
 use App\Models\Cuenta;
 use App\Models\Transferencia;
 use App\Services\TransferenciaService;
+use Illuminate\Http\Request;
 
 class TransferenciaController extends Controller
 {
