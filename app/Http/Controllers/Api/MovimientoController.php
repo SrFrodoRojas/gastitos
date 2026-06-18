@@ -19,16 +19,72 @@ class MovimientoController extends Controller
         private MovimientoService $service
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
+        $query = Movimiento::query()
+            ->with([
+                'cuenta.moneda',
+                'categoria',
+            ])
+            ->where('user_id', auth()->id());
+
+        if ($request->filled('tipo')) {
+            $query->where(
+                'tipo',
+                $request->tipo
+            );
+        }
+
+        if ($request->filled('cuenta_id')) {
+            $query->where(
+                'cuenta_id',
+                $request->cuenta_id
+            );
+        }
+
+        if ($request->filled('categoria_id')) {
+            $query->where(
+                'categoria_id',
+                $request->categoria_id
+            );
+        }
+
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate(
+                'fecha',
+                '>=',
+                $request->fecha_desde
+            );
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate(
+                'fecha',
+                '<=',
+                $request->fecha_hasta
+            );
+        }
+
+        if ($request->filled('texto')) {
+            $texto = $request->texto;
+
+            $query->where(function ($q) use ($texto) {
+                $q
+                    ->where(
+                        'descripcion',
+                        'like',
+                        "%{$texto}%"
+                    )
+                    ->orWhere(
+                        'observacion',
+                        'like',
+                        "%{$texto}%"
+                    );
+            });
+        }
+
         return MovimientoResource::collection(
-            auth()
-                ->user()
-                ->movimientos()
-                ->with([
-                    'cuenta.moneda',
-                    'categoria',
-                ])
+            $query
                 ->orderByDesc('fecha')
                 ->orderByDesc('id')
                 ->get()
