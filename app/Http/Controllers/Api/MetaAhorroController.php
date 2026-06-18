@@ -45,11 +45,6 @@ class MetaAhorroController extends Controller
         MetaAhorroUpdateRequest $request,
         MetaAhorro $metaAhorro
     ) {
-        dd([
-            auth()->id(),
-            $metaAhorro->id,
-            $metaAhorro->user_id,
-        ]);
         $this->authorize('update', $metaAhorro);
 
         $metaAhorro->update(
