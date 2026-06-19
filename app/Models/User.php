@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -77,5 +78,11 @@ class User extends Authenticatable
         return $this->hasMany(
             MovimientoRecurrente::class
         );
+    }
+
+
+    public function monedaPrincipal(): BelongsTo
+    {
+        return $this->belongsTo(Moneda::class, 'moneda_principal_id');
     }
 }

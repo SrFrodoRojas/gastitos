@@ -29,105 +29,63 @@ class CompraTarjetaController extends Controller
         );
     }
 
-    public function store(
-        CompraTarjetaStoreRequest $request
-    ) {
-        return DB::transaction(
-            function () use ($request) {
-                $tarjeta = TarjetaCredito::where(
-                    'user_id',
-                    auth()->id()
-                )->findOrFail(
-                    $request->tarjeta_id
-                );
+    public function store(CompraTarjetaStoreRequest $request)
+    {
+        return DB::transaction(function () use ($request) {
+            $tarjeta = TarjetaCredito::where('user_id', auth()->id())
+                ->findOrFail($request->tarjeta_id);
 
-                $compra = CompraTarjeta::create(
-                    $request->validated()
-                );
+            $compra = CompraTarjeta::create($request->validated());
 
-                $tarjeta->increment(
-                    'saldo_actual',
-                    $compra->monto_total
-                );
+            $tarjeta->increment('saldo_actual', $compra->monto_total);
 
-                $montoCuota = round(
-                    $compra->monto_total
-                        / $compra->cuotas,
-                    2
-                );
+            // --- Corrección de redondeo de cuotas ---
+            $montoCuota = round($compra->monto_total / $compra->cuotas, 2);
+            $ultimaCuota = round($compra->monto_total - ($montoCuota * ($compra->cuotas - 1)), 2);
 
-                $primerVencimiento = Carbon::parse(
-                    $compra->fecha_compra
-                )
-                    ->addMonth()
-                    ->day(
-                        $tarjeta->dia_vencimiento
-                    );
+            $primerVencimiento = Carbon::parse($compra->fecha_compra)
+                ->addMonth()
+                ->day($tarjeta->dia_vencimiento);
 
-                for (
-                    $i = 1;
-                    $i <= $compra->cuotas;
-                    $i++
-                ) {
-                    CuotaTarjeta::create([
-                        'compra_id' => $compra->id,
-                        'numero_cuota' => $i,
-                        'monto' => $montoCuota,
-                        'fecha_vencimiento' => $primerVencimiento
-                            ->copy()
-                            ->addMonths($i - 1),
-                        'pagada' => false,
-                    ]);
-                }
+            for ($i = 1; $i <= $compra->cuotas; $i++) {
+                $monto = ($i == $compra->cuotas) ? $ultimaCuota : $montoCuota;
 
-                return new CompraTarjetaResource(
-                    $compra
-                );
+                CuotaTarjeta::create([
+                    'compra_id' => $compra->id,
+                    'numero_cuota' => $i,
+                    'monto' => $monto,
+                    'fecha_vencimiento' => $primerVencimiento->copy()->addMonths($i - 1),
+                    'pagada' => false,
+                ]);
             }
-        );
+
+            return new CompraTarjetaResource($compra);
+        });
     }
 
-    public function show(
-        CompraTarjeta $compraTarjeta
-    ) {
-        $this->authorize(
-            'view',
-            $compraTarjeta
-        );
+    public function show(CompraTarjeta $compraTarjeta)
+    {
+        $this->authorize('view', $compraTarjeta);
 
-        return new CompraTarjetaResource(
-            $compraTarjeta
-        );
+        return new CompraTarjetaResource($compraTarjeta);
     }
 
-    public function destroy(
-        CompraTarjeta $compraTarjeta
-    ) {
-        $this->authorize(
-            'delete',
-            $compraTarjeta
-        );
+    public function destroy(CompraTarjeta $compraTarjeta)
+    {
+        $this->authorize('delete', $compraTarjeta);
 
-        DB::transaction(
-            function () use ($compraTarjeta) {
-                $compraTarjeta
-                    ->tarjeta
-                    ->decrement(
-                        'saldo_actual',
-                        $compraTarjeta->monto_total
-                    );
+        DB::transaction(function () use ($compraTarjeta) {
+            $compraTarjeta->tarjeta->decrement(
+                'saldo_actual',
+                $compraTarjeta->monto_total
+            );
 
-                $compraTarjeta
-                    ->cuotasDetalle()
-                    ->delete();
-
-                $compraTarjeta->delete();
-            }
-        );
+            $compraTarjeta->cuotasDetalle()->delete();
+            $compraTarjeta->delete();
+        });
 
         return response()->json([
-            'message' =>
-                'Compra eliminada correctamente',
+            'message' => 'Compra eliminada correctamente',
         ]);
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Models\TipoCambio;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TipoCambioResource;
+use App\Http\Requests\TipoCambioStoreRequest;
+use App\Http\Requests\TipoCambioUpdateRequest;
 use Illuminate\Http\Request;
 
 class TipoCambioController extends Controller
@@ -21,10 +23,10 @@ class TipoCambioController extends Controller
         );
     }
 
-    public function store(Request $request)
+    public function store(TipoCambioUpdateRequest $request, TipoCambio $tipoCambio)
     {
         $tipoCambio = TipoCambio::create(
-            $request->validate([
+            $request->validated([
                 'moneda_origen_id' =>
                     'required|exists:monedas,id',
 
@@ -65,7 +67,7 @@ class TipoCambioController extends Controller
     )
     {
         $tipoCambio->update(
-            $request->validate([
+            $request->validated([
                 'cotizacion' =>
                     'required|numeric|gt:0',
             ])

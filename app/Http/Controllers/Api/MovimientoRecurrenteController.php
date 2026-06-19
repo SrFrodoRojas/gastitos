@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\MovimientoRecurrente;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MovimientoRecurrenteStoreRequest;
 use App\Http\Requests\MovimientoRecurrenteUpdateRequest;
 use App\Http\Resources\MovimientoRecurrenteResource;
+use App\Models\MovimientoRecurrente;
 
 class MovimientoRecurrenteController extends Controller
 {
     public function index()
     {
         return MovimientoRecurrenteResource::collection(
-            auth()->user()
+            auth()
+                ->user()
                 ->movimientosRecurrentes()
                 ->with(['cuenta.moneda', 'categoria'])
                 ->latest()
@@ -29,25 +30,16 @@ class MovimientoRecurrenteController extends Controller
         ]);
 
         return new MovimientoRecurrenteResource(
-            $item->load([
-                'cuenta.moneda',
-                'categoria',
-            ])
+            $item->load(['cuenta.moneda', 'categoria'])
         );
     }
 
     public function show(MovimientoRecurrente $movimientoRecurrente)
     {
-        abort_unless(
-            $movimientoRecurrente->user_id == auth()->id(),
-            403
-        );
+        $this->authorize('view', $movimientoRecurrente);
 
         return new MovimientoRecurrenteResource(
-            $movimientoRecurrente->load([
-                'cuenta.moneda',
-                'categoria',
-            ])
+            $movimientoRecurrente->load(['cuenta.moneda', 'categoria'])
         );
     }
 
@@ -55,30 +47,18 @@ class MovimientoRecurrenteController extends Controller
         MovimientoRecurrenteUpdateRequest $request,
         MovimientoRecurrente $movimientoRecurrente
     ) {
-        abort_unless(
-            $movimientoRecurrente->user_id == auth()->id(),
-            403
-        );
+        $this->authorize('update', $movimientoRecurrente);
 
-        $movimientoRecurrente->update(
-            $request->validated()
-        );
+        $movimientoRecurrente->update($request->validated());
 
         return new MovimientoRecurrenteResource(
-            $movimientoRecurrente->fresh()->load([
-                'cuenta.moneda',
-                'categoria',
-            ])
+            $movimientoRecurrente->fresh()->load(['cuenta.moneda', 'categoria'])
         );
     }
 
-    public function destroy(
-        MovimientoRecurrente $movimientoRecurrente
-    ) {
-        abort_unless(
-            $movimientoRecurrente->user_id == auth()->id(),
-            403
-        );
+    public function destroy(MovimientoRecurrente $movimientoRecurrente)
+    {
+        $this->authorize('delete', $movimientoRecurrente);
 
         $movimientoRecurrente->delete();
 

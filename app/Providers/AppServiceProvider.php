@@ -9,6 +9,7 @@ use App\Models\CuotaTarjeta;
 use App\Models\Etiqueta;
 use App\Models\MetaAhorro;
 use App\Models\Movimiento;
+use App\Models\MovimientoRecurrente;
 use App\Models\Presupuesto;
 use App\Models\TarjetaCredito;
 use App\Models\Transferencia;
@@ -19,6 +20,7 @@ use App\Policies\CuotaTarjetaPolicy;
 use App\Policies\EtiquetaPolicy;
 use App\Policies\MetaAhorroPolicy;
 use App\Policies\MovimientoPolicy;
+use App\Policies\MovimientoRecurrentePolicy;
 use App\Policies\PresupuestoPolicy;
 use App\Policies\TarjetaCreditoPolicy;
 use App\Policies\TransferenciaPolicy;
@@ -82,6 +84,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(
             Etiqueta::class,
             EtiquetaPolicy::class
+        );
+
+        Gate::policy(
+            MovimientoRecurrente::class,
+            MovimientoRecurrentePolicy::class
         );
     }
 }
